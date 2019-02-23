@@ -1,2 +1,2 @@
-/temp/views
-/web/web.config
+/.gitignore
+/.vscode/*

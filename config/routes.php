@@ -6,7 +6,7 @@ $routes = array(
     '/'                   => 'common/index#index',
     '/login'              => 'common/index#login',
     '/logout'             => 'common/index#logout',
-    '/accueil'            => 'front/page#index',
+    '/home'               => 'front/page#index',
 
 
     '/projects'           => 'common/index#projects',

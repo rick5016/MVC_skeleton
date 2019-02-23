@@ -28,7 +28,9 @@ class ErrorController extends Controller
 
         $this->template = false;
         $this->view->error = $this->_exception->getMessage();
-        $this->view->query = $_SESSION['query'];
+        if (isset($_SESSION['query'])){
+            $this->view->query = $_SESSION['query'];
+        }
         $this->view->xdebug_message = $this->_exception->xdebug_message;
 
         // logs the error to the log

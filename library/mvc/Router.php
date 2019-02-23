@@ -9,30 +9,31 @@ class Router
     function __construct($routes)
     {
         $this->_routes = $routes;
-        $this->getUri();
-
-        Model::init();
-        Form::init();
     }
 
     public function execute()
     {
         try
         {
-            if (!isset($this->_routes[$this->uri])) {
+            // find the route
+            $uriTab = explode('?', $_SERVER['REQUEST_URI']);
+            $uri    = substr($uriTab[0], strlen(WEB_ROOT));
+
+            if (!isset($this->_routes[$uri]) && $uri != '"/favicon.ico"') {
                 throw new Exception('no route added for ' . $_SERVER['REQUEST_URI']);
             }
 
-            $moduleCtrlAction = array_reverse(explode('/', $this->_routes[$this->uri])); // array(actionName&ctrlName, module)
+            // explode the route (can be improved)
+            $moduleCtrlAction = array_reverse(explode('/', $this->_routes[$uri])); // array(actionName&ctrlName, module)
             $ctrlAction       = array_reverse(explode('#', $moduleCtrlAction[0])); // arrray(actionName, ctrlName)
 
             $ctrlName = (strtolower($moduleCtrlAction[1]) != 'common') ? ucfirst($moduleCtrlAction[1]) . '_' : '';
             $ctrlName .= ucfirst($ctrlAction[1]) . 'Controller';
 
-            if ($ctrlAction[0] == 'index' && $ctrlAction[1] == 'index' && $moduleCtrlAction[1] == 'common') {
-                header('Location: http://' . $_SERVER['SERVER_NAME'] . ROOT_ACCUEIL);
+            if ($ctrlAction[0] == 'index' && $ctrlAction[1] == 'index' && $moduleCtrlAction[1] == 'common') { // home page redirection
+                header('Location: http://' . $_SERVER['SERVER_NAME'] . ROOT_HOME);
             } else {
-                $controller = new $ctrlName($ctrlAction[0], $ctrlAction[1], $moduleCtrlAction[1]);
+                $controller = new $ctrlName($ctrlAction[0], $ctrlAction[1], $moduleCtrlAction[1]); // go to the controller
             }
             
             $controller->execute();
@@ -43,11 +44,5 @@ class Router
             $controller->setException($exception);
             $controller->execute();
         }
-    }
-
-    public function getUri()
-    {
-        $uriTab    = explode('?', $_SERVER['REQUEST_URI']);
-        $this->uri = substr($uriTab[0], strlen(WEB_ROOT));
     }
 }

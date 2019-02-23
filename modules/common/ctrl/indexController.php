@@ -7,7 +7,7 @@ class IndexController extends Controller
     {
         if (isset($_SESSION['user']))
         {
-            header('Location: http://' . $_SERVER['SERVER_NAME'] . ROOT_ACCUEIL);
+            header('Location: http://' . $_SERVER['SERVER_NAME'] . ROOT_HOME);
             exit();
         }
         $loginSubmit    = $this->getRequest()->getParam('login-submit');
@@ -18,7 +18,7 @@ class IndexController extends Controller
         $formRegister   = new Form_register();
         $params         = $this->getRequest()->getParams();
         if ($this->getRequest()->isPost() && isset($loginSubmit) && $formLogin->isValid($params)) {
-            header('Location: http://' . $_SERVER['SERVER_NAME'] . ROOT_ACCUEIL);
+            header('Location: http://' . $_SERVER['SERVER_NAME'] . ROOT_HOME);
         }
         if ($this->getRequest()->isPost() && isset($registerSubmit))
         {

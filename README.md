@@ -1,3 +1,1 @@
-TODO liste
-
-https://www.youtube.com/watch?v=xHWe1JZzbr0
+skeleton of a personal MVC (with Twig)

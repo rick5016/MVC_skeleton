@@ -10,7 +10,7 @@ class View
     public function __construct()
     {
         $cache = false;
-//        $cache = '../temp/views';
+//        $cache = '../temp/views'; // to activate in production
         
         $this->twig = new Twig_Environment(new Twig_Loader_Filesystem("../modules"), array("cache" => $cache));
         $this->twig->addGlobal('app', new Plugin_Form());
@@ -37,13 +37,18 @@ class View
     
     public function renderViewScript($action, $ctrl, $module, $template)
     {
-        if (file_exists(ROOT_PATH . '/modules/' . $module . '/views/' . $ctrl . '#' . $action . '.tpl')) {
-            $path = $module . '/views/' . $ctrl . '#' . $action . '.tpl';
+        // find the view
+        if (file_exists(ROOT_PATH . '/modules/' . $module . '/views/' . $ctrl . '#' . $action . '.html')) {
+            $path = $module . '/views/' . $ctrl . '#' . $action . '.html';
         } else {
-            $path = $module . '/views/' . $action . '.tpl';
+            if (file_exists(ROOT_PATH . '/modules/' . $module . '/views/' . $action . '.html')) {
+                $path = $module . '/views/' . $action . '.html';
+            } else {
+                throw new Exception('"/modules/' . $module . '/views/' . $ctrl . '#' . $action . '.html" OR  "/modules/' . $module . '/views/' . $action . '.html" does not exist');
+            }
         }
         
-        // Rendu unique
+        // unique rendering
         if (!$template || !empty($_SERVER['HTTP_X_REQUESTED_WITH']))
         {
             $viewScript = $this->twig->load($path);
@@ -60,8 +65,8 @@ class View
             exit;
         }
         
-        // Rendu avec template
-        $this->view = $this->twig->load("/common/views/template.tpl");
+        // rendered with template
+        $this->view = $this->twig->load("/common/views/template.html");
         $viewScript = $this->twig->load($path);
         $content    = $viewScript->render(array('content' => ob_get_clean()) + $this->parameters);
         
